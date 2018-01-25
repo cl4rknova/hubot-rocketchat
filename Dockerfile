@@ -23,6 +23,20 @@ ADD . /home/hubot/node_modules/hubot-rocketchat
 
 # hack added to get around owner issue: https://github.com/docker/docker/issues/6119
 USER root
+
+RUN set -x \
+ && apt-get update -qq \
+ && apt-get -y install python \
+ && apt-get -y install python3 
+ 
+RUN chown hubot: /home/hubot/scripts \
+ && cd /home/hubot/ \
+ && git clone https://github.com/elespike/hubot-no-js.git \
+ && cp -R hubot-no-js/*.coffee scripts/ \
+ && cp -R hubot-no-js/*.py scripts/ \
+ && cp -R hubot-no-js/bot_commands scripts/ \
+ && chown hubot: -R /home/hubot/scripts 
+
 RUN chown hubot:hubot -R /home/hubot/node_modules/hubot-rocketchat
 USER hubot
 
